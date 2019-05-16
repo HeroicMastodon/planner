@@ -89,7 +89,8 @@
         },
         async created() {
             await this.$store.dispatch("getUser");
-            await this.$store.dispatch("getEvents")
+            await this.$store.dispatch("getEvents");
+            
         },
         methods: {
             async logout() {

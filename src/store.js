@@ -10,6 +10,8 @@ export default new Vuex.Store({
     user: null,
     events: [],
     editEvent: null,
+    today: null,
+    dateContext: null,
   },
   mutations: {
     setUser(state, user) {
@@ -20,6 +22,12 @@ export default new Vuex.Store({
     },
     setEditEvent(state, event) {
       state.editEvent = event;
+    },
+    setToday(state, today) {
+        if (state.dateContext === null) {
+            state.dateContext = today
+        }
+        state.today = today;
     }
   },
   actions: {
@@ -105,6 +113,10 @@ export default new Vuex.Store({
       } catch (error) {
           console.log(error);
       }
+  },
+  makeToday(context, data) {
+    context.commit('setToday', data);
+
   }
 }
 })

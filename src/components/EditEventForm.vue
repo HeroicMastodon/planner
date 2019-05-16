@@ -1,20 +1,32 @@
 <template>
-
-
-    <form @submit.prevent="editEvent">
-        <input v-model="name" placeholder="Event Name">
-        <p></p>
-        <textarea v-model="description" placeholder="Description"></textarea>
-        <p></p>
-        <input v-model="date" type="date" name="Date">
-        <p></p>
-        <input v-model="time" type="time" name="Time">
-        <p></p>
-        <button type="button" @click="close" class="pure-button">Close</button>
-        <button type="submit" class="pure-button pure-button-secondary">Edit</button>
-        <button type="button" @click="deleteEvent" class="pure-button">Delete</button>
-    </form>
-
+<transition v-if="show" name="modal">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h1 class="modal-title">New Event</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p v-if="error" class="error">{{error}}</p>
+                        <!-- This form is the original form, simply remove all tags above and their correspondance to restore functionality -->
+                        <form @submit.prevent="editEvent">
+                            <input v-model="name" placeholder="Event Name">
+                            <p></p>
+                            <textarea v-model="description" placeholder="Description"></textarea>
+                            <p></p>
+                            <input v-model="date" type="date" name="Date">
+                            <p></p>
+                            <input v-model="time" type="time" name="Time">
+                            <p></p>
+                            <button type="button" @click="close" class="pure-button">Close</button>
+                            <button type="submit" class="pure-button pure-button-secondary">Edit</button>
+                            <button type="button" @click="deleteEvent" class="pure-button">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
 </template>
 
 <script>
@@ -22,7 +34,6 @@
         name: 'EditEvent',
         props: {
             show: Boolean,
-
         },
         data() {
             return {
@@ -34,8 +45,11 @@
             }
         },
 
-        created() {
-
+        async created() {
+            this.name = await this.$store.state.editEvent.name;
+            this.description = await this.$store.state.editEvent.description;
+            this.date = await this.$store.state.editEvent.date;
+            this.time = await this.$store.state.editEvent.time;
         },
         computed: {
             event() {

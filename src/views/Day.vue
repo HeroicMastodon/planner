@@ -6,7 +6,7 @@
                 <tr>
                     <th><a @click="toggleNewEvent"><i class="fas fa-calendar-plus"></i></a></th>
                     <th><a href="#" @click="logout"><i class="fas fa-sign-out-alt"></i></a></th>
-                    <th><h1>Tuesday April 16, 2019</h1></th>
+                    <th><h1>{{new Date(dateContext + 'T00:00').toDateString()}}</h1></th>
                 </tr>
             </table>
             <escape-event @escape="escape" @uploadFinished="uploadFinished" />
@@ -40,21 +40,32 @@
         data() {
             return {
                 show: false,
-                dateContext: "2019-04-16",
             }
         },
         computed: {
             user() {
                 return this.$store.state.user;
             },
+            dateContext() {
+                let date = this.$store.state.dateContext;
+                date = this.toEventDateString(date);
+                console.log(date)
+                return date; 
+            },
             events() {
                 let temp = this.$store.state.events.filter(event => event.date === this.dateContext);
                 return temp;
-            }
+            },
+            today() {
+                return this.$store.state.today;
+            },
+            
         },
         async created() {
             await this.$store.dispatch("getUser");
             await this.$store.dispatch("getEvents");
+            let today = new Date()
+            await this.$store.dispatch('makeToday', today);
         },
         methods: {
             async logout() {
@@ -94,7 +105,14 @@
                     return false;
                 }
                 return false;
-
+            },
+            toEventDateString(date) {
+                date = date.toDateString();
+                date = date.split(' ');
+                let months = {'Jan' : '01', 'Feb' : '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                 'Jul': '07', 'Aug' : '08', 'Sep' : '09', 'Oct' : '10', 'Nov' : '11', 'Dec' : '12'};
+                date = date[3] + '-' + months[date[1]] + '-' + date[2];
+                return date;
             }
         }
     }
